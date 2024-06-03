@@ -105,3 +105,23 @@ class Indicators:
         # Calcular la media móvil exponencial de 200 períodos
         ema = data['close'].ewm(span=200, adjust=False).mean()
         return ema
+
+
+    # Medias Móviles - (funcion para test)
+    def MM(data, period):
+            
+        # Media Móvil simple de 30 periodos
+        MV30 = pd.DataFrame()
+        MV30['Close'] = data['Close'].rolling(window=30).mean()# Calculo media al periodo de 30
+        print("Media movil simple de 30 periodos: ", MV30.index==29)
+        # Media movil simple de 30 periodos
+        MV100 = pd.DataFrame()
+        MV100['Close'] = data['Close'].rolling(window=100).mean()# Calculo media al periodo de 30
+        print("Media movil simple de 100 periodos: ", MV100==29)
+        
+        # Precios de cierre de Media Móvil
+        data = pd.DataFrame()
+        data['BTC-USD'] = data['Close']
+        data['MV30'] = MV30['Close']
+        data['MV100'] = MV100['Close']
+        print(data)
