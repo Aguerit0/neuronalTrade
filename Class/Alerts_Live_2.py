@@ -8,16 +8,20 @@ from Indicators import Indicators
 from CryptoData import CryptoData
 
 async def main():
-    print('Indicators: \n1- RSI \n2- MACD \n3- Bollinger \n4- EMA \n5- MM \n6- Stochastic RSI \n')
+    # Symnols list
+    symbols = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "ADAUSDT", "XRPUSDT", 
+                   "SOLUSDT", "DOTUSDT", "DOGEUSDT", "LINKUSDT", "LTCUSDT"]
+    # Time interval
+    timeinterval = 1
+    temporalidad = f'{timeinterval}m'
+    
+    # Choose indicator
+    print('Indicators: \n1- RSI \n2- Stochastic RSI \n3- MACD \n4- Bollinger Bands \n5- EMA 200 \n6- MM \n')
     indicator = input('Option: ')
     while True:
-        # Symnols list
-        symbols = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "ADAUSDT", "XRPUSDT", 
-                   "SOLUSDT", "DOTUSDT", "DOGEUSDT", "LINKUSDT", "LTCUSDT"]
+        
 
-        # Time interval
-        timeinterval = 1
-        temporalidad = f'{timeinterval}m'
+        
 
         # Configure timezone
         now = datetime.now(timezone.utc)
@@ -32,7 +36,7 @@ async def main():
                     # Get data live from binance
                     df_live_data = CryptoData(symbol, temporalidad)
                     D = pd.DataFrame(await df_live_data.get_live_data())
-                    # Get indiicator
+                    # Get indicator
                     rsi = await Indicators.rsi(D) 
                     if rsi <= 25 or rsi >= 75:
                             signal = 'COMPRA' if rsi <= 25 else 'VENTA'
@@ -43,12 +47,27 @@ async def main():
                 
                 
         elif indicator == '2':
-                idc = Indicators.macd(D)
-                1
+                for symbol in symbols:
+                    # Get data live from binance
+                    df_live_data = CryptoData(symbol, temporalidad)
+                    D = pd.DataFrame(await df_live_data.get_live_data())
+                    # Get indicator
+                    stoch_k_smooth, stoch_d = await Indicators.stochastic_rsi(D)
+                    print(stoch_d, stoch_k_smooth)
+            
+                await asyncio.sleep(5)
                 
                 
         elif indicator == '3':
-                idc = Indicators.bollinger_bands(D)
+                for symbol in symbols:
+                    # Get data live from binance
+                    df_live_data = CryptoData(symbol, temporalidad)
+                    D = pd.DataFrame(await df_live_data.get_live_data())
+                    # Get indicator
+                    macd = await Indicators.macd(D)
+                    print(macd)
+            
+                await asyncio.sleep(5)
                 
                 
         elif indicator == '4':

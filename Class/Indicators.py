@@ -41,7 +41,7 @@ class Indicators:
         return rsi
     
     # RSI stochastic
-    def stochastic_rsi(data, period=14, smooth_k=3, smooth_d=3):
+    async def stochastic_rsi(data, period=14, smooth_k=3, smooth_d=3):
         # RSI standard 
         # Convert data to numeric
         data[['open', 'high', 'low', 'close']] = data[['open', 'high', 'low', 'close']].apply(pd.to_numeric)
@@ -89,6 +89,8 @@ class Indicators:
         # Strategy data
         print("MACD: ", macd_line.iloc[-1], " | Signal: ", signal_line.iloc[-1], " | Histogram: ", histogram.iloc[-1])
         
+        return macd_line, signal_line, histogram
+        
     # Bands of Bollinger
     async def bollinger_bands(data):
         # SMA 21
@@ -107,7 +109,7 @@ class Indicators:
 
 
     # (function for test) -> Moving Average
-    def MM(data):
+    def meanmoving(data):
             
         # Calculate MMS 30 periods
         MV30 = pd.DataFrame()
@@ -123,4 +125,5 @@ class Indicators:
         data['BTC-USD'] = data['Close']
         data['MV30'] = MV30['Close']
         data['MV100'] = MV100['Close']
-        print(data)
+        return data
+        
