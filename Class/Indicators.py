@@ -40,10 +40,10 @@ class Indicators:
 
         return rsi
     
-    # RSI estocastico
+    # RSI stochastic
     def stochastic_rsi(data, period=14, smooth_k=3, smooth_d=3):
-        # Calcula el RSI estándar
-        # Convertir las columnas 'open', 'high', 'low' y 'close' a tipo numérico
+        # RSI standard 
+        # Convert data to numeric
         data[['open', 'high', 'low', 'close']] = data[['open', 'high', 'low', 'close']].apply(pd.to_numeric)
 
         delta = data['close'].diff()
@@ -56,20 +56,20 @@ class Indicators:
         rs = avg_gain / avg_loss
         rsi = 100 - (100 / (1 + rs))
         
-        # Calcula el %K del RSI estocástico
+        # Calculate %K of stochastic RSI
         rsi_min = rsi.rolling(window=period).min()
         rsi_max = rsi.rolling(window=period).max()
         stoch_k = ((rsi - rsi_min) / (rsi_max - rsi_min)) * 100
         
-        # Aplica suavizado a %K
+        # Smoothing %K
         stoch_k_smooth = stoch_k.rolling(window=smooth_k).mean()
         
-        # Calcula %D del RSI estocástico
+        # Calculate %D of stochastic RSI
         stoch_d = stoch_k_smooth.rolling(window=smooth_d).mean()
         
         return stoch_k_smooth, stoch_d
     
-    # MACD: recibe un DataFrame con la columna 'close'
+    # MACD: receive a DataFrame with the 'close' column
     async def macd(data, short_period=12, long_period=26, signal_period=9):
         # Calculate Short EMA
         short_ema = data['close'].ewm(span=short_period, min_periods=1, adjust=False).mean()
@@ -86,40 +86,39 @@ class Indicators:
         # Calculate MACD histogram
         histogram = macd_line - signal_line
 
-        # Datos de la estrategia
+        # Strategy data
         print("MACD: ", macd_line.iloc[-1], " | Signal: ", signal_line.iloc[-1], " | Histogram: ", histogram.iloc[-1])
         
-    # Bandas de Bollinger
+    # Bands of Bollinger
     async def bollinger_bands(data):
         # SMA 21
         sma_21 = data['close'].rolling(window=21).mean()
         
-        # Banda inferior y superior
+        # Calculate lower and upper bands
         lower = sma_21 - 2 * data['close'].rolling(window=20).std()
         upper = sma_21 + 2 * data['close'].rolling(window=20).std()
 
         return sma_21, lower, upper
     
-    # Función para calcular la EMA de 200 períodos
+    # Calculate EMA of 200 periods
     async def ema_200(data):
-        # Calcular la media móvil exponencial de 200 períodos
         ema = data['close'].ewm(span=200, adjust=False).mean()
         return ema
 
 
-    # Medias Móviles - (funcion para test)
-    def MM(data, period):
+    # (function for test) -> Moving Average
+    def MM(data):
             
-        # Media Móvil simple de 30 periodos
+        # Calculate MMS 30 periods
         MV30 = pd.DataFrame()
-        MV30['Close'] = data['Close'].rolling(window=30).mean()# Calculo media al periodo de 30
+        MV30['Close'] = data['Close'].rolling(window=30).mean()# Calculate mean of 30 periods
         print("Media movil simple de 30 periodos: ", MV30.index==29)
-        # Media movil simple de 30 periodos
+        # Calculate MMS 100 periods
         MV100 = pd.DataFrame()
-        MV100['Close'] = data['Close'].rolling(window=100).mean()# Calculo media al periodo de 30
+        MV100['Close'] = data['Close'].rolling(window=100).mean()# Calculate mean of 100 periods
         print("Media movil simple de 100 periodos: ", MV100==29)
         
-        # Precios de cierre de Media Móvil
+        # Price of crossover of MMS 30 and MMS 100
         data = pd.DataFrame()
         data['BTC-USD'] = data['Close']
         data['MV30'] = MV30['Close']

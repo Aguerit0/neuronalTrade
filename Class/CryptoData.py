@@ -1,6 +1,7 @@
 import pandas as pd
 import requests
-from datetime import datetime
+from datetime import datetime, timezone
+
 import calendar
 from binance.spot import Spot as Client
 
@@ -10,12 +11,12 @@ class CryptoData:
         self.timeinterval = timeinterval
     
     async def get_live_data(self):
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         unixtime = calendar.timegm(now.utctimetuple())
         since = unixtime
         start = str(since - 60*60*10)
         
-        url = 'https://fapi.binance.com/fapi/v1/klines?symbol='+self.symbol+'&interval='+str(self.timeinterval)+'m'+'&limit=100'
+        url = 'https://fapi.binance.com/fapi/v1/klines?symbol='+self.symbol+'&interval='+str(self.timeinterval)+'&limit=100'
         data = requests.get(url).json()        
         
         D = pd.DataFrame(data)
