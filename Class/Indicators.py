@@ -86,9 +86,6 @@ class Indicators:
         # Calculate MACD histogram
         histogram = macd_line - signal_line
 
-        # Strategy data
-        print("MACD: ", macd_line.iloc[-1], " | Signal: ", signal_line.iloc[-1], " | Histogram: ", histogram.iloc[-1])
-        
         return macd_line, signal_line, histogram
         
     # Bands of Bollinger

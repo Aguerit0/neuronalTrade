@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 import asyncio
 from Indicators import Indicators
 from CryptoData import CryptoData
+import numpy as np
 
 class AlertLive:
     def __init__(self):
@@ -47,11 +48,31 @@ class AlertLive:
 
     async def check_macd(self):
         for symbol in self.symbols:
-            # Get data live from binance
+            # Obtener datos en vivo de Binance
             data = await self.fetch_data(symbol)
-            stoch_k_smooth, stoch_d = await Indicators.stochastic_rsi(data)
-            print(stoch_d, stoch_k_smooth)
+            macd_line, signal_line, histogram = await Indicators.macd(data)
+            data_macd = pd.DataFrame()
+            data_macd['MACD'] = macd_line
+            data_macd['Signal'] = signal_line
+            data_macd['Histogram'] = histogram
 
+            signal = self.macd_signal(data_macd)
+            if signal == 1:
+                print(f'{symbol}: BUY (MACD) - Price: {data["close"].iloc[-1]}')
+            elif signal == -1:
+                print(f'{symbol}: SELL (MACD) - Price: {data["close"].iloc[-1]}')
+
+    def macd_signal(self, data_macd):
+        # Solo revisamos la última señal
+        if data_macd['MACD'].iloc[-1] > data_macd['Signal'].iloc[-1]:
+            return 1  # Señal de compra
+        elif data_macd['MACD'].iloc[-1] < data_macd['Signal'].iloc[-1]:
+            return -1  # Señal de venta
+        else:
+            return 0  # No hay señal
+
+       
+                
     async def check_bollinger_bands(self):
         for symbol in self.symbols:
             # Get data live from binance
