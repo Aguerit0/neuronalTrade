@@ -57,17 +57,17 @@ class Indicators:
         rsi = 100 - (100 / (1 + rs))
         
         # Calculate %K of stochastic RSI
-        rsi_min = rsi.rolling(window=period).min()
-        rsi_max = rsi.rolling(window=period).max()
-        stoch_k = ((rsi - rsi_min) / (rsi_max - rsi_min)) * 100
+        rsi_min = rsi.rolling(window=period, center=False).min()
+        rsi_max = rsi.rolling(window=period, center=False).max()
+        stoch = ((rsi - rsi_min) / (rsi_max - rsi_min)) * 100
         
         # Smoothing %K
-        stoch_k_smooth = stoch_k.rolling(window=smooth_k).mean()
+        k = stoch.rolling(window=smooth_k, center=False).mean()
         
         # Calculate %D of stochastic RSI
-        stoch_d = stoch_k_smooth.rolling(window=smooth_d).mean()
+        d = k.rolling(window=smooth_d, center=False).mean()
         
-        return stoch_k_smooth, stoch_d
+        return k, d
     
     # MACD: receive a DataFrame with the 'close' column
     async def macd(data, short_period=12, long_period=26, signal_period=9):

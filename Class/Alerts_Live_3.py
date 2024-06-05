@@ -26,8 +26,8 @@ class AlertLive:
             D = pd.DataFrame(await df_live_data.get_live_data())
             # Get indicator
             rsi = await Indicators.rsi(D) 
-            if rsi <= 25 or rsi >= 75:
-                    signal = 'COMPRA' if rsi <= 25 else 'VENTA'
+            if rsi <= 30 or rsi >= 70: 
+                    signal = 'COMPRA' if rsi <= 30 else 'VENTA'
                     text = f'Binance Futures {symbol} RSI ({self.temporalidad}): {rsi} - {signal}'
                     print(text)
 
@@ -35,8 +35,15 @@ class AlertLive:
         for symbol in self.symbols:
             # Get data live from binance
             data = await self.fetch_data(symbol)
-            stoch_k_smooth, stoch_d = await Indicators.stochastic_rsi(data)
-            print(stoch_d, stoch_k_smooth)
+            k, d = await Indicators.stochastic_rsi(data)
+            # print signals for each symbol
+            if (k.iloc[-1]<=15 and k.iloc[-1]>d.iloc[-1] and k.iloc[-2]<d.iloc[-2]):
+                signal = f'{symbol}: COMPRA (Stochastiic RSI) - valor: {k.iloc[-1]}'
+                print(signal)
+            elif (k.iloc[-1]>=85 and k.iloc[-1]<d.iloc[-1] and k.iloc[-2]>d.iloc[-2]):
+                signal = f'{symbol}: VENTA (Stochastiic RSI) - valor {k.iloc[-1]}'
+                print(signal)
+                
 
     async def check_macd(self):
         for symbol in self.symbols:
