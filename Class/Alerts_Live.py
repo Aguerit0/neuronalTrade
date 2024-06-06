@@ -59,20 +59,15 @@ class AlertLive:
             data_macd['Signal'] = signal_line
             data_macd['Histogram'] = histogram
 
-            signal = self.macd_signal(data_macd)
-            if signal == 1:
-                print(f'{symbol}: BUY (MACD) - Price: {data["close"].iloc[-1]}')
-            elif signal == -1:
+            # Sell signal
+            if((data_macd['MACD'].iloc[-2]>data_macd['Signal'].iloc[-2] and data_macd['Histogram'].iloc[-2]>0) and (data_macd['MACD'].iloc[-1]<data_macd['Signal'].iloc[-1] and data_macd['Histogram'].iloc[-1]<0)):
                 print(f'{symbol}: SELL (MACD) - Price: {data["close"].iloc[-1]}')
 
-    def macd_signal(self, data_macd):
-        # Solo revisamos la última señal
-        if data_macd['MACD'].iloc[-1] > data_macd['Signal'].iloc[-1]:
-            return 1  # buy signal
-        elif data_macd['MACD'].iloc[-1] < data_macd['Signal'].iloc[-1]:
-            return -1  # sell signal
-        else:
-            return 0  # no signal   
+            # Buy signal
+            elif((data_macd['MACD'].iloc[-2]<data_macd['Signal'].iloc[-2] and data_macd['Histogram'].iloc[-2]<0) and (data_macd['MACD'].iloc[-1]>data_macd['Signal'].iloc[-1] and data_macd['Histogram'].iloc[-1]>0)):
+                print(f'{symbol}: BUY (MACD) - Price: {data["close"].iloc[-1]}')
+
+     
 
        
                 
@@ -104,13 +99,17 @@ class AlertLive:
             elif data['close'].iloc[-1] < ema200.iloc[-1] and data['close'].iloc[-2] > ema200.iloc[-1]:
                 print(f'{symbol}: RESISTANCE (EMA 200) - Price: {data["close"].iloc[-1]}')
 
-    async def check_meanmoving(self):
+    async def check_moving_averages(self):
         for symbol in self.symbols:
             # Get data live from binance
             data = await self.fetch_data(symbol)
-            meanmoving = pd.DataFrame()
-            meanmoving = await Indicators.meanmoving(data)
-            print(meanmoving)
+            moving_average = pd.DataFrame()
+            moving_average = await Indicators.moving_averages(data)
+            # Calculate signal
+            if((moving_average['MM_5'].iloc[-2] and moving_average['MM_10'].iloc[-2])<moving_average['MM_20'].iloc[-2] and (moving_average['MM_5'].iloc[-1] and moving_average['MM_10'].iloc[-1])>moving_average['MM_20'].iloc[-1]):
+                print(f'{symbol}: BUY (MM) - Price: {data["close"].iloc[-1]}')
+            elif((moving_average['MM_5'].iloc[-2] and moving_average['MM_10'].iloc[-2])>moving_average['MM_20'].iloc[-2] and (moving_average['MM_5'].iloc[-1] and moving_average['MM_10'].iloc[-1])<moving_average['MM_20'].iloc[-1]):
+                print(f'{symbol}: SELL (MM) - Price: {data["close"].iloc[-1]}')
 
     async def run(self, indicator):
         # Loop for indicators methods
@@ -126,7 +125,7 @@ class AlertLive:
             elif indicator == '5':
                 await self.check_ema_200()
             elif indicator == '6':
-                await self.check_mm()
+                await self.check_moving_averages()
             await asyncio.sleep(5)
         
 if __name__ == "__main__":
