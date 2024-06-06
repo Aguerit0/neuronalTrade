@@ -59,7 +59,13 @@ class AlertLive:
             data_macd['Signal'] = signal_line
             data_macd['Histogram'] = histogram
 
-            
+            # Sell signal
+            if((data_macd['MACD'].iloc[-2]>data_macd['Signal'].iloc[-2] and data_macd['Histogram'].iloc[-2]>0) and (data_macd['MACD'].iloc[-1]<data_macd['Signal'].iloc[-1] and data_macd['Histogram'].iloc[-1]<0)):
+                print(f'{symbol}: SELL (MACD) - Price: {data["close"].iloc[-1]}')
+
+            # Buy signal
+            elif((data_macd['MACD'].iloc[-2]<data_macd['Signal'].iloc[-2] and data_macd['Histogram'].iloc[-2]<0) and (data_macd['MACD'].iloc[-1]>data_macd['Signal'].iloc[-1] and data_macd['Histogram'].iloc[-1]>0)):
+                print(f'{symbol}: BUY (MACD) - Price: {data["close"].iloc[-1]}')
 
      
 
