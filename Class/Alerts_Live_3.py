@@ -59,20 +59,9 @@ class AlertLive:
             data_macd['Signal'] = signal_line
             data_macd['Histogram'] = histogram
 
-            signal = self.macd_signal(data_macd)
-            if signal == 1:
-                print(f'{symbol}: BUY (MACD) - Price: {data["close"].iloc[-1]}')
-            elif signal == -1:
-                print(f'{symbol}: SELL (MACD) - Price: {data["close"].iloc[-1]}')
+            
 
-    def macd_signal(self, data_macd):
-        # Solo revisamos la última señal
-        if data_macd['MACD'].iloc[-1] > data_macd['Signal'].iloc[-1]:
-            return 1  # buy signal
-        elif data_macd['MACD'].iloc[-1] < data_macd['Signal'].iloc[-1]:
-            return -1  # sell signal
-        else:
-            return 0  # no signal   
+     
 
        
                 
