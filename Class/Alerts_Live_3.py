@@ -27,16 +27,19 @@ class AlertLive:
             D = pd.DataFrame(await df_live_data.get_live_data())
             # Get indicator
             rsi = await Indicators.rsi(D) 
-            if rsi <= 30 or rsi >= 70: 
-                    signal = 'COMPRA' if rsi <= 30 else 'VENTA'
-                    text = f'Binance Futures {symbol} RSI ({self.temporalidad}): {rsi} - {signal}'
+            last_rsi = rsi.iloc[-1].round(2)
+            if last_rsi <= 30 or last_rsi >= 70: 
+                    signal = 'COMPRA' if last_rsi <= 30 else 'VENTA'
+                    
+                    text = f'Binance Futures {symbol} RSI ({self.temporalidad}): {last_rsi} - {signal}'
                     print(text)
 
     async def check_stochastic_rsi(self):
         for symbol in self.symbols:
             # Get data live from binance
             data = await self.fetch_data(symbol)
-            k, d = await Indicators.stochastic_rsi(data)
+            rsi_values = await Indicators.rsi(data)
+            k, d = await Indicators.stochastic_rsi(rsi_values)
             # print signals for each symbol
             if (k.iloc[-1]<=15 and k.iloc[-1]>d.iloc[-1] and k.iloc[-2]<d.iloc[-2]):
                 signal = f'{symbol}: COMPRA (Stochastiic RSI) - valor: {k.iloc[-1]}'
@@ -65,11 +68,11 @@ class AlertLive:
     def macd_signal(self, data_macd):
         # Solo revisamos la última señal
         if data_macd['MACD'].iloc[-1] > data_macd['Signal'].iloc[-1]:
-            return 1  # Señal de compra
+            return 1  # buy signal
         elif data_macd['MACD'].iloc[-1] < data_macd['Signal'].iloc[-1]:
-            return -1  # Señal de venta
+            return -1  # sell signal
         else:
-            return 0  # No hay señal
+            return 0  # no signal   
 
        
                 
@@ -78,7 +81,15 @@ class AlertLive:
             # Get data live from binance
             data = await self.fetch_data(symbol)
             sma_21, lower, upper = await Indicators.bollinger_bands(data)
-            print(sma_21, lower, upper) 
+            # Calculate signal
+            data['close'] = data['close'].astype(float)
+            if data['close'].iloc[-1] > upper.iloc[-1]:
+                print(f'{symbol}: SELL (Bollinger Bands) - Price: {data["close"].iloc[-1]}')
+                
+            elif data['close'].iloc[-1] < lower.iloc[-1]:
+                print(f'{symbol}: BUY (Bollinger Bands) - Price: {data["close"].iloc[-1]}')
+                
+
 
     async def check_ema_200(self):
         for symbol in self.symbols:

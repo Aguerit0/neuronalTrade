@@ -16,37 +16,27 @@ class Indicators:
         self.timeinterval = timeinterval
     
     # RSI
-    async def rsi(data):
-        period = 14
-        df = data
+    async def rsi(data, period = 14):
+        df = data.copy()
         df['close'] = df['close'].astype(float)
-        df2 = df['close'].to_numpy()
+        delta = df['close'].diff()
 
-        df2 = pd.DataFrame(df2, columns = ['close'])
-        delta = df2.diff()
-
-        up, down = delta.copy(), delta.copy()
-        up[up < 0] = 0
-        down[down > 0] = 0
-
+        up, down = delta.clip(lower=0), delta.clip(upper=0).abs()
         _gain = up.ewm(com=(period - 1), min_periods=period).mean()
-        _loss = down.abs().ewm(com=(period - 1), min_periods=period).mean()
+        _loss = down.ewm(com=(period - 1), min_periods=period).mean()
 
         RS = _gain / _loss
-
-        rsi = 100 - (100 / (1 + RS))  
-        rsi = rsi['close'].iloc[-1]
-        rsi = round(rsi, 1)
-
-        return rsi
+        rsi = 100 - (100 / (1 + RS))
+        
+        return rsi # return rsi series
     
     # RSI stochastic
-    async def stochastic_rsi(data, period=14, smooth_k=3, smooth_d=3):
+    async def stochastic_rsi(rsi, period=14, smooth_k=3, smooth_d=3):
         # RSI standard 
         # Convert data to numeric
-        data[['open', 'high', 'low', 'close']] = data[['open', 'high', 'low', 'close']].apply(pd.to_numeric)
+        #data[['open', 'high', 'low', 'close']] = data[['open', 'high', 'low', 'close']].apply(pd.to_numeric)
 
-        delta = data['close'].diff()
+        ''' delta = data['close'].diff()
         gain = delta.where(delta > 0, 0)
         loss = -delta.where(delta < 0, 0)
 
@@ -54,7 +44,10 @@ class Indicators:
         avg_loss = loss.rolling(window=period, min_periods=1).mean()
 
         rs = avg_gain / avg_loss
-        rsi = 100 - (100 / (1 + rs))
+        rsi = 100 - (100 / (1 + rs)) '''
+        
+        # RSI to method RSI
+        
         
         # Calculate %K of stochastic RSI
         rsi_min = rsi.rolling(window=period, center=False).min()
