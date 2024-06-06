@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 import asyncio
 from Indicators import Indicators
 from CryptoData import CryptoData
+import numpy as np
 
 class AlertLive:
     def __init__(self):
@@ -26,16 +27,19 @@ class AlertLive:
             D = pd.DataFrame(await df_live_data.get_live_data())
             # Get indicator
             rsi = await Indicators.rsi(D) 
-            if rsi <= 30 or rsi >= 70: 
-                    signal = 'COMPRA' if rsi <= 30 else 'VENTA'
-                    text = f'Binance Futures {symbol} RSI ({self.temporalidad}): {rsi} - {signal}'
+            last_rsi = rsi.iloc[-1].round(2)
+            if last_rsi <= 30 or last_rsi >= 70: 
+                    signal = 'COMPRA' if last_rsi <= 30 else 'VENTA'
+                    
+                    text = f'Binance Futures {symbol} RSI ({self.temporalidad}): {last_rsi} - {signal}'
                     print(text)
 
     async def check_stochastic_rsi(self):
         for symbol in self.symbols:
             # Get data live from binance
             data = await self.fetch_data(symbol)
-            k, d = await Indicators.stochastic_rsi(data)
+            rsi_values = await Indicators.rsi(data)
+            k, d = await Indicators.stochastic_rsi(rsi_values)
             # print signals for each symbol
             if (k.iloc[-1]<=15 and k.iloc[-1]>d.iloc[-1] and k.iloc[-2]<d.iloc[-2]):
                 signal = f'{symbol}: COMPRA (Stochastiic RSI) - valor: {k.iloc[-1]}'
@@ -47,24 +51,58 @@ class AlertLive:
 
     async def check_macd(self):
         for symbol in self.symbols:
-            # Get data live from binance
+            # Obtener datos en vivo de Binance
             data = await self.fetch_data(symbol)
-            stoch_k_smooth, stoch_d = await Indicators.stochastic_rsi(data)
-            print(stoch_d, stoch_k_smooth)
+            macd_line, signal_line, histogram = await Indicators.macd(data)
+            data_macd = pd.DataFrame()
+            data_macd['MACD'] = macd_line
+            data_macd['Signal'] = signal_line
+            data_macd['Histogram'] = histogram
 
+            signal = self.macd_signal(data_macd)
+            if signal == 1:
+                print(f'{symbol}: BUY (MACD) - Price: {data["close"].iloc[-1]}')
+            elif signal == -1:
+                print(f'{symbol}: SELL (MACD) - Price: {data["close"].iloc[-1]}')
+
+    def macd_signal(self, data_macd):
+        # Solo revisamos la última señal
+        if data_macd['MACD'].iloc[-1] > data_macd['Signal'].iloc[-1]:
+            return 1  # buy signal
+        elif data_macd['MACD'].iloc[-1] < data_macd['Signal'].iloc[-1]:
+            return -1  # sell signal
+        else:
+            return 0  # no signal   
+
+       
+                
     async def check_bollinger_bands(self):
         for symbol in self.symbols:
             # Get data live from binance
             data = await self.fetch_data(symbol)
             sma_21, lower, upper = await Indicators.bollinger_bands(data)
-            print(sma_21, lower, upper) 
+            # Calculate signal
+            data['close'] = data['close'].astype(float)
+            if data['close'].iloc[-1] > upper.iloc[-1]:
+                print(f'{symbol}: SELL (Bollinger Bands) - Price: {data["close"].iloc[-1]}')
+                
+            elif data['close'].iloc[-1] < lower.iloc[-1]:
+                print(f'{symbol}: BUY (Bollinger Bands) - Price: {data["close"].iloc[-1]}')
+                
+
 
     async def check_ema_200(self):
         for symbol in self.symbols:
             # Get data live from binance
             data = await self.fetch_data(symbol)
+            data['close'] = data['close'].astype(float)
             ema200 = await Indicators.ema_200(data)
-            print(ema200)   
+            #print(ema200.iloc[-1])
+            # Calculate signal
+            if data['close'].iloc[-1] > ema200.iloc[-1] and data['close'].iloc[-2] < ema200.iloc[-1]:
+                print(f'{symbol}: SUPPORT (EMA 200) - Price: {data["close"].iloc[-1]}')
+            elif data['close'].iloc[-1] < ema200.iloc[-1] and data['close'].iloc[-2] > ema200.iloc[-1]:
+                print(f'{symbol}: RESISTANCE (EMA 200) - Price: {data["close"].iloc[-1]}')
 
     async def check_meanmoving(self):
         for symbol in self.symbols:

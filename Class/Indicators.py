@@ -95,25 +95,28 @@ class Indicators:
     # Calculate EMA of 200 periods
     async def ema_200(data):
         ema = data['close'].ewm(span=200, adjust=False).mean()
+        
         return ema
 
 
-    # (function for test) -> Moving Average
-    def meanmoving(data):
+    # 3 Moving Averages
+    async def moving_averages(data):
             
-        # Calculate MMS 30 periods
-        MV30 = pd.DataFrame()
-        MV30['Close'] = data['Close'].rolling(window=30).mean()# Calculate mean of 30 periods
-        print("Media movil simple de 30 periodos: ", MV30.index==29)
-        # Calculate MMS 100 periods
-        MV100 = pd.DataFrame()
-        MV100['Close'] = data['Close'].rolling(window=100).mean()# Calculate mean of 100 periods
-        print("Media movil simple de 100 periodos: ", MV100==29)
+        # Calculate MMS 5 periods
+        MM_5 = pd.DataFrame()
+        MM_5['close'] = data['close'].rolling(window=5).mean()
+        # Calculate MM_5S 10 periods
+        MM_10 = pd.DataFrame()
+        MM_10['close'] = data['close'].rolling(window=10).mean()# Calculate mean of 10 periods
+        # Calculate MM_5S 10 periods
+        MM_20 = pd.DataFrame()
+        MM_20['close'] = data['close'].rolling(window=20).mean()# Calculate mean of 20 periods
         
-        # Price of crossover of MMS 30 and MMS 100
+        # Price of crossover of MM_5  and MM_10 and MM_20
         data = pd.DataFrame()
-        data['BTC-USD'] = data['Close']
-        data['MV30'] = MV30['Close']
-        data['MV100'] = MV100['Close']
+        data['MM_5'] = MM_5['close']
+        data['MM_10'] = MM_10['close']
+        data['MM_20'] = MM_20['close']
+        
         return data
         

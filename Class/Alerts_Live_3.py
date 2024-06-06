@@ -95,16 +95,26 @@ class AlertLive:
         for symbol in self.symbols:
             # Get data live from binance
             data = await self.fetch_data(symbol)
+            data['close'] = data['close'].astype(float)
             ema200 = await Indicators.ema_200(data)
-            print(ema200)   
+            #print(ema200.iloc[-1])
+            # Calculate signal
+            if data['close'].iloc[-1] > ema200.iloc[-1] and data['close'].iloc[-2] < ema200.iloc[-1]:
+                print(f'{symbol}: SUPPORT (EMA 200) - Price: {data["close"].iloc[-1]}')
+            elif data['close'].iloc[-1] < ema200.iloc[-1] and data['close'].iloc[-2] > ema200.iloc[-1]:
+                print(f'{symbol}: RESISTANCE (EMA 200) - Price: {data["close"].iloc[-1]}')
 
-    async def check_meanmoving(self):
+    async def check_moving_averages(self):
         for symbol in self.symbols:
             # Get data live from binance
             data = await self.fetch_data(symbol)
-            meanmoving = pd.DataFrame()
-            meanmoving = await Indicators.meanmoving(data)
-            print(meanmoving)
+            moving_average = pd.DataFrame()
+            moving_average = await Indicators.moving_averages(data)
+            # Calculate signal
+            if((moving_average['MM_5'].iloc[-2] and moving_average['MM_10'].iloc[-2])<moving_average['MM_20'].iloc[-2] and (moving_average['MM_5'].iloc[-1] and moving_average['MM_10'].iloc[-1])>moving_average['MM_20'].iloc[-1]):
+                print(f'{symbol}: BUY (MM) - Price: {data["close"].iloc[-1]}')
+            elif((moving_average['MM_5'].iloc[-2] and moving_average['MM_10'].iloc[-2])>moving_average['MM_20'].iloc[-2] and (moving_average['MM_5'].iloc[-1] and moving_average['MM_10'].iloc[-1])<moving_average['MM_20'].iloc[-1]):
+                print(f'{symbol}: SELL (MM) - Price: {data["close"].iloc[-1]}')
 
     async def run(self, indicator):
         # Loop for indicators methods
@@ -120,7 +130,7 @@ class AlertLive:
             elif indicator == '5':
                 await self.check_ema_200()
             elif indicator == '6':
-                await self.check_mm()
+                await self.check_moving_averages()
             await asyncio.sleep(5)
         
 if __name__ == "__main__":
