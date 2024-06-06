@@ -1,3 +1,5 @@
+## (ACTUALMENTE SE ENCUENTRA EN DESARROLLO)
+
 # NeuronalTrade
 
 ## Descripción
