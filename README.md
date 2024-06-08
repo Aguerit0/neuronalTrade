@@ -1,3 +1,5 @@
+## (ACTUALMENTE SE ENCUENTRA EN DESARROLLO)
+
 # NeuronalTrade
 
 ## Descripción
@@ -83,50 +85,12 @@ La sección del calendario de ganancias permite agregar y visualizar las gananci
 
 ### Milestone 1: Configuración Inicial y Diseño de la Arquitectura
 
-**Descripción:**
-a) Configurar el entorno de desarrollo, incluyendo la instalación de herramientas y dependencias necesarias.
-b) Diseñar la arquitectura del proyecto, identificando los componentes principales y las interacciones entre ellos.
-c) Crear el repositorio en GitHub y configurar la estructura de carpetas y archivos iniciales.
-d) Definir el esquema de la base de datos y los modelos de datos necesarios para el proyecto.
-
 ### Milestone 2: Implementación de Funcionalidades Básicas
-
-**Descripción:**
-a) Desarrollar las clases y objetos necesarios para implementar las funcionalidades básicas del proyecto.
-b) Diseñar el modelo de base de datos y crear las tablas y relaciones correspondientes.
-c) Generar gráficos y visualizaciones preliminares que se utilizarán en la interfaz de usuario.
-d) Integrar APIs de terceros para acceder a datos o servicios necesarios para el proyecto.
 
 ### Milestone 3: Desarrollo de Funcionalidades Avanzadas
 
-**Descripción:**
-a) Implementar algoritmos para el análisis en tiempo real de datos de criptomonedas.
-b) Desarrollar la lógica para enviar notificaciones en tiempo real a los usuarios.
-c) Integrar servicios de mensajería para enviar alertas a través de diferentes canales.
-d) Crear un simulador de estrategias de trading que permita a los usuarios probar diferentes enfoques.
-e) Crear gráficos para la visualización de los indicadores.
-
 ### Milestone 4: Diseño Web
-
-**Descripción:**
-En esta etapa del proyecto, nos enfocaremos en el diseño visual y la creación de la interfaz de usuario para la aplicación web. Se desarrollarán las vistas y páginas principales del proyecto, así como también los componentes reutilizables de la interfaz, como el footer, menú de navegación, botones, etc. El objetivo es crear una interfaz de usuario atractiva, coherente y fácil de usar para los usuarios finales del proyecto. Este hito nos permitirá visualizar y planificar la estructura y el diseño de la aplicación web, asegurando que se cumplan los requisitos de usabilidad y experiencia de usuario.
 
 ### Milestone 5: Despliegue y Lanzamiento
 
-**Descripción:**
-a) Preparar el sistema para el despliegue en un entorno de producción.
-b) Configurar el servidor de producción y realizar las optimizaciones necesarias.
-c) Desplegar la aplicación en el servidor en línea y realizar pruebas finales.
-d) Lanzar oficialmente el proyecto y promocionarlo a la comunidad a través de canales adecuados.
-
 ### Milestone 6: Optimización y Pruebas
-
-**Descripción:**
-a) Realizar pruebas de rendimiento para identificar cuellos de botella y áreas de mejora.
-b) Ejecutar pruebas exhaustivas de las funcionalidades implementadas para asegurar su correcto funcionamiento.
-c) Depurar errores y problemas encontrados durante las pruebas y corregirlos.
-d) Documentar la implementación del proyecto y crear una guía de usuario para los usuarios finales.
-
-## Licencia
-
-Este proyecto está bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
