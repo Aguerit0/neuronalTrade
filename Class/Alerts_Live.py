@@ -15,7 +15,7 @@ class AlertLive:
         self.timeinterval = 1
         self.temporalidad = f'{self.timeinterval}m'
 
-    async def fetch_data(self, symbol):
+    async def fetch_data(self, symbol:str):
         df_live_data = CryptoData(symbol, self.temporalidad)
         return await df_live_data.get_live_data()
 
