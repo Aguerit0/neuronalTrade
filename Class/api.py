@@ -68,6 +68,16 @@ async def get_moving_averages_alerts():
             raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
+# Method to get live data from the API
+@app.get("/api/live_data", summary="Get live data", description="Get live data for a symbol and time interval")
+async def get_live_data():
+    try:
+        data = await bot.fetch_data('BTC-USDT')
+        return {"data": data}
+    except Exception as e:
+        logger.error(f"Error getting live data: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
 # Websockets for real-time alerts
 @app.websocket("/ws/alerts/{indicator}")
 async def websocket_endpoint(websocket: WebSocket, indicator: str):
