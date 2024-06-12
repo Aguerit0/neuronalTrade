@@ -6,6 +6,7 @@ import logging
 from fastapi.websockets import WebSocket
 import asyncio
 from CryptoData import CryptoData
+import pandas as pd
 
 # Configurar el registro
 logging.basicConfig(level=logging.INFO)
@@ -79,19 +80,20 @@ async def get_moving_averages_alerts():
 async def get_live_data():
     try:
         data = await bot_CryptoData.get_live_data()
-        data_dict = data.to_dict(orient='records')
-        return {"data": data_dict}
+        data = data.to_dict(orient='records')
+        return {"data": data}
     except Exception as e:
         logger.error(f"Error getting live data: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
     
 # Websockets for real-time alerts
-@app.websocket("/ws/alerts/{indicator}")
+@app.websocket("/live_data")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     try:
         while True:
             data = await bot_CryptoData.get_live_data()
+            
             await websocket.send_json({"data": data})
             await asyncio.sleep(60)
     except WebSocketDisconnect:

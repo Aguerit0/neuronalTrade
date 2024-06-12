@@ -2,8 +2,13 @@ import asyncio
 import requests
 import plotly.graph_objects as go
 import time
-
+import pandas as pd
+from datetime import datetime, date
+import json
 if __name__ == "__main__":
+    
+    time = pd.DataFrame()
+    
     #print('Indicators: \n1- RSI \n2- Stochastic RSI \n3- MACD \n4- Bollinger Bands \n5- EMA 200 \n6- MM \n')
     #indicator = input('Option: ')
     
@@ -13,21 +18,29 @@ if __name__ == "__main__":
     def fetch_live_data():
         response = requests.get("http://localhost:8000/api/live_data")
         data = response.json()
-        return data["data"]
+        # Convert JSON to DataFrame
+        if 'data' in data and isinstance(data['data'], list):
+            data = pd.json_normalize(data['data'])
+        else:
+            raise ValueError('Unexpected JSON format')
+       
+        # Add the 'time' column
+        data['time_now'] = datetime.now()
+        
+        return data
     
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=[], y=[], mode='lines+markers'))
+    fig.add_trace(go.Scatter(x=[], y=[], mode='lines'))
     fig.show()
-    
     while True:
-        new_data = fetch_live_data()
-        current_time = time.strftime('%Y-%m-%d %H:%M:%S')
+        df = pd.DataFrame(fetch_live_data())
+        df = df.iloc[:, [4,12]]
+        print(df.iloc[-1])
+        # Add new data to the graph
+        fig.add_trace(go.Scatter(x=df['time_now'], y=df['close'], mode='lines'))
         
-        # Agrega nuevos datos al gráfico
-        fig.add_trace(go.Scatter(x=[current_time], y=[new_data], mode='lines+markers'))
-        
-        # Actualiza el gráfico
+        # Update the graph
         fig.show()
         
-        # Espera 60 segundos antes de obtener nuevos datos
-        time.sleep(60)
+        # Wait 60s / before getting new data
+        #time.sleep(60)
