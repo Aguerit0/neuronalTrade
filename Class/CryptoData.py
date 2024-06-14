@@ -25,8 +25,7 @@ class CryptoData:
     
         return D
 
-    @staticmethod
-    def get_historical_price(symbol, timeinterval):
+    def get_historical_price(self):
         # URL to access the Binance API
         base_url = "https://api.binance.com"
         
@@ -34,7 +33,7 @@ class CryptoData:
         spot_client = Client(base_url=base_url)
         
         #   Access historical data for the symbol
-        history = spot_client.klines(symbol, timeinterval, limit=2000)
+        history = spot_client.klines(self.symbol, self.timeinterval, limit=2000)
         
         # Convert the data to a DataFrame
         columns = ['time', 'open', 'high', 'low', 'close', 'volume', 'close_time', 'quote_asset_volume', 
