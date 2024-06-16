@@ -20,4 +20,5 @@ app.add_page(index, route="/")
 app.add_page(tools, route="/alerts")
 app.add_page(team, route="/cryptomap")
 app.add_page(team, route="/indicators")
+app.add_page(team, route="/predicts")
 
