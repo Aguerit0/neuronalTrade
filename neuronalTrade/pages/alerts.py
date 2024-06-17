@@ -4,9 +4,9 @@ from neuronalTrade.navigation import navbar
 from neuronalTrade.template import template
 
 @template
-def team() -> rx.Component:
+def alerts() -> rx.Component:
     return rx.box(
-            navbar(heading="Alerts"),
+            navbar(heading="Alertas"),
             rx.box(
                 rx.text("placeholder"),
                 margin_top="calc(50px + 2em)",

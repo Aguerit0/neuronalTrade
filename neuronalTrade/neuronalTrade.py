@@ -6,8 +6,10 @@ import reflex as rx
 
 from neuronalTrade.styles import BACKGROUND_COLOR, FONT_FAMILY, THEME, STYLESHEETS
 
-from neuronalTrade.pages.cryptomap import tools
-from neuronalTrade.pages.alerts import team
+from neuronalTrade.pages.cryptomap import cryptomap
+from neuronalTrade.pages.indicators import indicators
+from neuronalTrade.pages.predicts import predicts
+from neuronalTrade.pages.alerts import alerts
 from neuronalTrade.pages.index import index
 
 # Create app instance and add index page.
@@ -17,8 +19,7 @@ app = rx.App(
 )
 
 app.add_page(index, route="/")
-app.add_page(tools, route="/alerts")
-app.add_page(team, route="/cryptomap")
-app.add_page(team, route="/indicators")
-app.add_page(team, route="/predicts")
-
+app.add_page(indicators, route="/indicators")
+app.add_page(predicts, route="/predicts")
+app.add_page(cryptomap, route="/cryptomap")
+app.add_page(alerts, route="/alerts")

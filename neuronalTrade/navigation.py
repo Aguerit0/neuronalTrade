@@ -68,6 +68,8 @@ dashboard_sidebar = sidebar(
     sidebar_link(text="Alertas", href="/alerts", icon="settings"),
     sidebar_link(text="Crypto Map", href="/cryptomap", icon="users"),
     sidebar_link(text="Indicadores", href="/indicators", icon="bar_chart_3"),
+    sidebar_link(text="Predicciones", href="/predicts", icon="bar_chart_3"),
+    
     
     logo_src="/logo.jpg",
     heading="neuronalTrade",

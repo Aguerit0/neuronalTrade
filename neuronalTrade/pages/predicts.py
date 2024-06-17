@@ -58,9 +58,9 @@ def content_grid():
 
 
 @template
-def tools() -> rx.Component:
+def predicts() -> rx.Component:
     return rx.box(
-            navbar(heading="predicts"),
+            navbar(heading="Predicciones"),
             rx.box(
                 rx.text("placeholder"),
                 margin_top="calc(50px + 2em)",

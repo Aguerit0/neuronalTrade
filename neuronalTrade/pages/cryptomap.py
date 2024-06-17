@@ -4,7 +4,7 @@ from neuronalTrade.navigation import navbar
 from neuronalTrade.template import template
 
 @template
-def tools() -> rx.Component:
+def cryptomap() -> rx.Component:
     return rx.box(
             navbar(heading="Crypto Map"),
             rx.box(
