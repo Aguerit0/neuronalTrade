@@ -71,8 +71,8 @@ dashboard_sidebar = sidebar(
     sidebar_link(text="Predicciones", href="/predicts", icon="bar_chart_3"),
     
     
-    logo_src="/logo.jpg",
-    heading="neuronalTrade",
+    logo_src="/logo.jpg", # Change logo
+    heading="NT",
 )
 
 

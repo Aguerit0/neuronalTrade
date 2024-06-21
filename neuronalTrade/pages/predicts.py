@@ -7,13 +7,13 @@ from neuronalTrade.template import template
 
 import reflex as rx
 from neuronalTrade.data import (
-    line_chart_data,
-    lines,
+    stat_card_data,
+    lines_data_live,
     pie_chart_data,
     area_chart_data,
     areas,
-    stat_card_data,
     tabular_data,
+    line_chart_component,
 )
 from neuronalTrade.graphs import (
     area_chart,

@@ -1,7 +1,32 @@
 """Mock data to populate the dashboard charts and tables."""
 
 import reflex as rx
-from neuronalTrade.graphs import Area, Line
+from neuronalTrade.graphs import Area, Line, line_chart
+import asyncio
+from neuronalTrade.Class.CryptoData import CryptoData
+import pandas as pd
+
+# Instance of CryptoData class
+symbol = "BTCUSDT"
+time_interval = "1m"
+crypto_data = CryptoData(symbol, time_interval)
+
+# Function to get data from the API
+async def get_live_data():
+    data = await crypto_data.get_live_data()
+    # Convert JSON to DataFrame
+    live_data = data[['open_time', 'close']].rename(columns={'open_time': 'name', 'close': 'uv'})
+    live_data['name'] = pd.to_datetime(live_data['name'], unit='ms').astype(str)  # Convert to string
+    live_data_dict = live_data.to_dict('records')
+    return live_data_dict
+
+# Function to update chart data
+async def update_chart_data():
+    live_data_dict = await get_live_data()
+    return live_data_dict
+
+# Placeholder for line chart data
+line_chart_data = []  # This will be updated asynchronously later
 
 stat_card_data = [
     [
@@ -26,22 +51,10 @@ stat_card_data = [
     ],
 ]
 
-line_chart_data = [
-    {"name": "Page A", "uv": 4000, "pv": 2400, "amt": 2400},
-    {"name": "Page B", "uv": 3000, "pv": 1398, "amt": 2210},
-    {"name": "Page C", "uv": 2000, "pv": 9800, "amt": 2290},
-    {"name": "Page D", "uv": 2780, "pv": 3908, "amt": 2000},
-    {"name": "Page E", "uv": 1890, "pv": 4800, "amt": 2181},
-    {"name": "Page F", "uv": 2390, "pv": 3800, "amt": 2500},
-    {"name": "Page G", "uv": 3490, "pv": 4300, "amt": 2100},
+lines_data_live = [
+    Line(data_key="uv", stroke="#8884d8"),
+    Line(data_key="pv", stroke="var(--accent-8)"),
 ]
-
-
-lines = [
-    Line(data_key="pv", stroke="#8884d8"),
-    Line(data_key="uv", stroke="var(--accent-8)"),
-]
-
 
 pie_chart_data = [
     {"name": "Group A", "value": 400, "fill": "var(--red-7)"},
@@ -59,10 +72,31 @@ areas = [
     Area(data_key="uv", stroke="var(--accent-8)", fill="var(--accent-8)"),
 ]
 
-
 tabular_data = [
     ["Full name", "Email", "Group"],
     ["Danilo Sousa", "danilo@example.com", rx.badge("Developer")],
     ["Zahra Ambessa", "zahra@example.com", rx.badge("Admin", variant="surface")],
     ["Jasper Eriksson", "jasper@example.com", rx.badge("Developer")],
 ]
+
+
+# Inicializa el componente line_chart con una lista vacía por defecto
+line_chart_component = line_chart(data=[], data_key="name", lines=lines_data_live)
+
+# Función para inicializar y actualizar los datos del gráfico
+async def initialize_chart_data():
+    global line_chart_component
+    line_chart_data = await update_chart_data()
+    # Re-renderiza el componente del gráfico con los nuevos datos
+    line_chart_component = line_chart(data=line_chart_data, data_key="name", lines=lines_data_live)
+
+# Función de arranque para el módulo
+def start_data_initialization():
+    loop = asyncio.get_event_loop()
+    if loop.is_running():
+        loop.create_task(initialize_chart_data())
+    else:
+        loop.run_until_complete(initialize_chart_data())
+
+# Llama a la función de arranque
+start_data_initialization()
