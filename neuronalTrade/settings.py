@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "telegrambot",
     "alerts",
     "heatmap",
+    "timezones"
 ]
 
 MIDDLEWARE = [
