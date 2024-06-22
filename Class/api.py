@@ -5,8 +5,6 @@ from Alerts_Live import AlertLive
 import logging
 from fastapi.websockets import WebSocket
 import asyncio
-from CryptoData import CryptoData
-import pandas as pd
 
 # Configurar el registro
 logging.basicConfig(level=logging.INFO)
@@ -14,21 +12,6 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 bot = AlertLive()
-symbols = [
-    "BTCUSDT",
-    "ETHUSDT",
-    "BNBUSDT",
-    "ADAUSDT",
-    "XRPUSDT",
-    "SOLUSDT",
-    "DOTUSDT",
-    "DOGEUSDT",
-    "LINKUSDT",
-    "LTCUSDT",
-]
-timeinterval = "1m"
-bot_CryptoData = CryptoData("BTCUSDT", timeinterval)
-
 
 @app.get(
     "/alerts/rsi",
@@ -113,39 +96,6 @@ async def get_moving_averages_alerts():
         logger.error(f"Error Moving Averages alerts: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
-
-# Method to get live data from the API
-@app.get(
-    "/api/live_data",
-    summary="Get live data",
-    description="Get live data for a symbol and time interval",
-)
-async def get_live_data():
-    try:
-        data = await bot_CryptoData.get_live_data()
-        data = data.to_dict(orient="records")
-        return {"data": data}
-    except Exception as e:
-        logger.error(f"Error getting live data: {e}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
-
-
-# Websockets for real-time alerts
-@app.websocket("/live_data")
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    try:
-        while True:
-            data = await bot_CryptoData.get_live_data()
-
-            await websocket.send_json({"data": data})
-            await asyncio.sleep(60)
-    except WebSocketDisconnect:
-        logger.info("Client disconnected")
-    except Exception as e:
-        logger.error(f"Error in websocket connection: {e}")
-    finally:
-        await websocket.close()
 
 
 # Websockets for real-time alerts
