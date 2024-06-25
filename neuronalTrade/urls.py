@@ -19,7 +19,9 @@ from django.urls import path
 from alerts import views
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", views.hello),
-    
+    path('admin/', admin.site.urls),
+    # from templates import base.html
+    path('', views.base ), 
+    path('alerts/', views.alerts, name='alerts'),
+
 ]
