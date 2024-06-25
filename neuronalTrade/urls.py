@@ -1,27 +1,14 @@
-"""
-URL configuration for neuronalTrade project.
+# neuronalTrade/urls.py
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path
-from alerts import views
+from alerts import views as views_alerts
+from predicts import views as views_predicts
+from neuronalTrade import views as views_base
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # from templates import base.html
-    path('', views.base ), 
-    path('alerts/', views.alerts, name='alerts'),
-
+    path('', views_base.base, name='base'),
+    path('alerts/', views_alerts.alerts, name='alerts'),
+    path('predicts/', views_predicts.predicts, name='predicts'),
 ]
