@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "apps.alerts",
     "apps.predicts",
+    "apps.heatmap",
+    "apps.telegrambot",
     
 ]
 
