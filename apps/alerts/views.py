@@ -1,6 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+import requests
+from django.http import JsonResponse
 
-# Create your views here.
 def alerts(request):
-    return HttpResponse( render(request, 'alerts/alerts.html' ))
+    return render(request, 'alerts/alerts.html')
+
+def get_alerts(request):
+    # Endpoint FastAPI (corrigiendo el puerto)
+    response = requests.get('http://127.0.0.1:5000/alerts/')
+    data = response.json()
+    return JsonResponse({'alerts': data['alerts']})

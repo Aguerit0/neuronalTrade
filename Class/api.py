@@ -5,6 +5,7 @@ from Alerts_Live import AlertLive
 import logging
 from fastapi.websockets import WebSocket
 import asyncio
+import uvicorn
 
 # Configurar el registro
 logging.basicConfig(level=logging.INFO)
@@ -12,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 bot = AlertLive()
+
 
 @app.get(
     "/alerts/rsi",
@@ -97,7 +99,6 @@ async def get_moving_averages_alerts():
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
-
 # Websockets for real-time alerts
 @app.websocket("/ws/alerts/{indicator}")
 async def websocket_endpoint(websocket: WebSocket, indicator: str):
@@ -118,10 +119,11 @@ async def websocket_endpoint(websocket: WebSocket, indicator: str):
                 alerts = await bot.check_moving_averages()
             else:
                 await websocket.send_json({"error": "Invalid indicator"})
-                break
+                continue
 
             await websocket.send_json({"alerts": alerts})
-            await asyncio.sleep(5)  # Wait (x) seconds before sending the next alert
+            print(f"Sent alerts: {alerts}")  # Debug
+            await asyncio.sleep(10)  # Wait (x) seconds before sending the next alert
     except WebSocketDisconnect:
         logger.info("Client disconnected")
     except Exception as e:

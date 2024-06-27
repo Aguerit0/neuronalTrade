@@ -1,13 +1,54 @@
-{% extends "base.html" %}
-
-{% block title %} Alertsadasdasdasdas {% endblock %}
+{% extends 'base.html' %}
+{% block title %} Alertas {% endblock %}
 
 {% block content %}
-<div role="alert" class="alert alert-error">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-    <span>Error! Task failed successfully.</span>
+<div class="overflow-x-auto">
+    <table id="alerts-table" class="table table-zebra">
+        <thead>
+            <tr>
+                <th>Crypto</th>
+                <th>Hora</th>
+                <th>Señal</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Las filas de la tabla se llenarán con JavaScript -->
+        </tbody>
+    </table>
 </div>
+
+<script>
+    const websocket = new WebSocket("ws://127.0.0.1:5000/ws/alerts/rsi");
+
+    websocket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        const alertsTable = document.getElementById("alerts-table").getElementsByTagName("tbody")[0];
+
+        alertsTable.innerHTML = "";
+
+        data.alerts.forEach(alert => {
+            const row = alertsTable.insertRow();
+            const cryptoCell = row.insertCell(0);
+            const timeCell = row.insertCell(1);
+            const signalCell = row.insertCell(2);
+
+            cryptoCell.innerHTML = alert[0];
+            timeCell.innerHTML = alert[1];
+
+            if (alert[2] === 0) {
+                signalCell.innerHTML = "--";
+            } else if (alert[2] === 1) {
+                signalCell.innerHTML = "BUY";
+            } else if (alert[2] === 2) {
+                signalCell.innerHTML = "SELL";
+            } else {
+                signalCell.innerHTML = "N/A";
+            }
+        });
+    };
+
+    websocket.onclose = function(event) {
+        console.error("WebSocket closed unexpectedly");
+    };
+</script>
 {% endblock %}

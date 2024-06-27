@@ -16,7 +16,7 @@ if __name__ == "__main__":
     # print(response.json())
 
     def fetch_live_data():
-        response = requests.get("http://localhost:8000/api/live_data")
+        response = requests.get(" ")
         data = response.json()
         # Convert JSON to DataFrame
         if "data" in data and isinstance(data["data"], list):
