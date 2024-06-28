@@ -122,8 +122,8 @@ async def websocket_endpoint(websocket: WebSocket, indicator: str):
                 continue
 
             await websocket.send_json({"alerts": alerts})
-            print(f"Sent alerts: {alerts}")  # Debug
-            await asyncio.sleep(10)  # Wait (x) seconds before sending the next alert
+            print(f"{alerts}")  # Debug
+            await asyncio.sleep(60)  # Wait (x) seconds before sending the next alert
     except WebSocketDisconnect:
         logger.info("Client disconnected")
     except Exception as e:

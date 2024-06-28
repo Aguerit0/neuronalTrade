@@ -12,7 +12,56 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Las filas de la tabla se llenarán con JavaScript -->
+            <tr>
+                <td>BTCUSDT</td>
+                <td>--:--:--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>ETHUSDT</td>
+                <td>--:--:--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>BNBUSDT</td>
+                <td>--:--:--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>ADAUSDT</td>
+                <td>--:--:--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>XRPUSDT</td>
+                <td>--:--:--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>SOLUSDT</td>
+                <td>--:--:--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>DOTUSDT</td>
+                <td>--:--:--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>DOGEUSDT</td>
+                <td>--:--:--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>LINKUSDT</td>
+                <td>--:--:--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>LTCUSDT</td>
+                <td>--:--:--</td>
+                <td>--</td>
+            </tr>
         </tbody>
     </table>
 </div>
@@ -20,7 +69,7 @@
 <script>
     const websocket = new WebSocket("ws://127.0.0.1:5000/ws/alerts/rsi");
 
-    websocket.onmessage = function(event) {
+    websocket.onmessage = function (event) {
         const data = JSON.parse(event.data);
         const alertsTable = document.getElementById("alerts-table").getElementsByTagName("tbody")[0];
 
@@ -47,7 +96,7 @@
         });
     };
 
-    websocket.onclose = function(event) {
+    websocket.onclose = function (event) {
         console.error("WebSocket closed unexpectedly");
     };
 </script>
