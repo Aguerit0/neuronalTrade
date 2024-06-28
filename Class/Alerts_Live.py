@@ -33,7 +33,8 @@ class AlertLive:
     async def check_rsi(self):
        # -- = 0 -- BUY -- = 1 -- SELL -- = 2 -- 
         results = []
-        #current_time = datetime.datetime.now().strftime("%H:%M:%S")
+        now = datetime.now()
+        now = str(now.strftime("%H:%M:%S"))
         for symbol in self.symbols:
             df_live_data = CryptoData(symbol, self.temporalidad)
             D = pd.DataFrame(await df_live_data.get_live_data())
@@ -45,7 +46,7 @@ class AlertLive:
                 signal = 2
             else:
                 signal = 0
-            results.append((symbol, 0, signal))
+            results.append((symbol, now, signal))
         return results
 
     async def check_stochastic_rsi(self):
