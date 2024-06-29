@@ -7,8 +7,8 @@ import calendar
 from datetime import datetime, timezone
 
 # Reemplaza 'your_token' con el token de tu bot
-chat_id = "-4192881719"
-bot = telegram.Bot(token="7088629547:AAFOim8jVRZ2HUmnWRiHOtU9LNDz12-_ZJo")
+chat_id = "-4192881719" # id for telegram group
+bot = telegram.Bot(token="7088629547:AAFOim8jVRZ2HUmnWRiHOtU9LNDz12-_ZJo") # bot token
 
 
 async def send_message(chat_id, text):
