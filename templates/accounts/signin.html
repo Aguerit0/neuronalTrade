@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %} INICIAR SESIÓN {% endblock %}
+
+{% block content %}
+
+<section class="">
+    <div class=" items-center px-5 py-12 lg:px-20">
+        <div class="flex flex-col w-full max-w-md p-10 mx-auto my-6 transition duration-500 ease-in-out transform bg-white rounded-lg md:mt-0">
+            <div class="mt-8">
+                <div class="mt-6">
+                    <form action="{% url 'base' %}" method="POST" class="space-y-6">
+                        {% csrf_token %}
+                        <div>
+                            <label for="username" class="block text-sm font-medium text-neutral-600"> Usuario </label>
+                            <div class="mt-1">
+                                <input id="username" name="username" type="text" autocomplete="username" required="" placeholder="Your username" class="block w-full px-5 py-3 text-base text-neutral-600 placeholder-gray-300 transition duration-500 ease-in-out transform border border-transparent rounded-lg bg-gray-50 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-300">
+                            </div>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label for="password1" class="block text-sm font-medium text-neutral-600"> Contraseña </label>
+                            <div class="mt-1">
+                                <input id="password" name="password" type="password" autocomplete="current-password" required="" placeholder="Your Password" class="block w-full px-5 py-3 text-base text-neutral-600 placeholder-gray-300 transition duration-500 ease-in-out transform border border-transparent rounded-lg bg-gray-50 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-300">
+                            </div>
+                        </div>
+                        <div>
+                            <button type="submit" class="flex items-center justify-center w-full px-10 py-4 text-base font-medium text-center text-white transition duration-500 ease-in-out transform bg-blue-600 rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Ingresar</button>
+                        </div>
+                        {% if error %}
+                            <div class="text-sm text-red-600">{{ error }}</div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

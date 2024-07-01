@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "apps.predicts",
     "apps.heatmap",
     "apps.telegrambot",
+    "apps.accounts",
     
 ]
 
